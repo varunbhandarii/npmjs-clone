@@ -1,9 +1,4 @@
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  useMemo,
-} from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import debounce from "lodash.debounce";
 import { searchPackages } from "../api/npmApi";
@@ -20,10 +15,10 @@ const Header = () => {
 
   const resultsRef = useRef();
 
-  const debouncedFetchSuggestions = useMemo(() => {
-    return debounce(async (inputValue) => {
+  const debouncedFetchSuggestions = useCallback(
+    debounce(async (inputValue) => {
       if (!inputValue.trim()) {
-        setResults([]); // Clear suggestions if input is empty
+        setResults([]);
         return;
       }
 
@@ -38,10 +33,11 @@ const Header = () => {
       } finally {
         setLoading(false);
       }
-    }, 300);
-  }, [searchPackages]);
+    }, 300),
+    []
+  );
 
-  // Clean up the debounced function on unmount
+  // Cleanup debounce on unmount
   useEffect(() => {
     return () => {
       debouncedFetchSuggestions.cancel();
