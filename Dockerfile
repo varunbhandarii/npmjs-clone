@@ -20,8 +20,12 @@ FROM nginx:alpine
 # Copy the React build output to Nginx's default directory.
 COPY --from=build /app/build /usr/share/nginx/html
 
-# Expose the default port for Nginx.
-EXPOSE 80
+# Set the Nginx environment variable for PORT to listen to Cloud Run's port
+# Override the default Nginx configuration with a custom config file that listens on the correct port
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port 8080
+EXPOSE 8080
 
 # Start Nginx.
 CMD ["nginx", "-g", "daemon off;"]
