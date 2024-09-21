@@ -27,7 +27,7 @@ const Header = () => {
         setError(null);
 
         try {
-          const data = await searchPackages(inputValue); // API call
+          const data = await searchPackages(inputValue);
           setResults(data.objects.slice(0, 10)); // Limit to 10 suggestions
         } catch (err) {
           setError("Failed to fetch suggestions");
