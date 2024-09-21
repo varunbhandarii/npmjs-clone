@@ -15,45 +15,41 @@ const Header = () => {
 
   const resultsRef = useRef();
 
-  const debouncedFetchSuggestions = debounce(
-    async (inputValue, setResults, setLoading, setError, searchPackages) => {
-      if (!inputValue.trim()) {
-        setResults([]); // Reset results if input is empty
-        return;
-      }
-
-      setLoading(true);
-      setError(null);
-
-      try {
-        const data = await searchPackages(inputValue);
-        setResults(data.objects.slice(0, 10)); // Limit to 10 suggestions
-      } catch (err) {
-        setError("Failed to fetch suggestions");
-      } finally {
-        setLoading(false);
-      }
-    },
-    300
-  ); // 300ms delay
-
   const fetchSuggestions = useCallback(
-    (inputValue) => {
-      debouncedFetchSuggestions(
-        inputValue,
-        setResults,
-        setLoading,
-        setError,
-        searchPackages
-      );
-    },
-    [setResults, setLoading, setError, searchPackages] // Dependencies
+    debounce(
+      async (inputValue, setResults, setLoading, setError, searchPackages) => {
+        if (!inputValue.trim()) {
+          setResults([]); // Reset results if input is empty
+          return;
+        }
+
+        setLoading(true);
+        setError(null);
+
+        try {
+          const data = await searchPackages(inputValue); // API call
+          setResults(data.objects.slice(0, 10)); // Limit to 10 suggestions
+        } catch (err) {
+          setError("Failed to fetch suggestions");
+        } finally {
+          setLoading(false);
+        }
+      },
+      300
+    ),
+    []
   );
 
   const handleInputChange = (e) => {
     const inputValue = e.target.value;
     setQuery(inputValue);
-    fetchSuggestions(inputValue);
+    fetchSuggestions(
+      inputValue,
+      setResults,
+      setLoading,
+      setError,
+      searchPackages
+    );
   };
 
   const handleSearch = (e) => {
