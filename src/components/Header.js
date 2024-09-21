@@ -1,4 +1,9 @@
-import React, { useState, useCallback, useRef, useEffect } from "react";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useMemo,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import debounce from "lodash.debounce";
 import { searchPackages } from "../api/npmApi";
@@ -15,41 +20,38 @@ const Header = () => {
 
   const resultsRef = useRef();
 
-  const fetchSuggestions = useCallback(
-    debounce(
-      async (inputValue, setResults, setLoading, setError, searchPackages) => {
-        if (!inputValue.trim()) {
-          setResults([]); // Reset results if input is empty
-          return;
-        }
+  const debouncedFetchSuggestions = useMemo(() => {
+    return debounce(async (inputValue) => {
+      if (!inputValue.trim()) {
+        setResults([]); // Clear suggestions if input is empty
+        return;
+      }
 
-        setLoading(true);
-        setError(null);
+      setLoading(true);
+      setError(null);
 
-        try {
-          const data = await searchPackages(inputValue);
-          setResults(data.objects.slice(0, 10)); // Limit to 10 suggestions
-        } catch (err) {
-          setError("Failed to fetch suggestions");
-        } finally {
-          setLoading(false);
-        }
-      },
-      300
-    ),
-    []
-  );
+      try {
+        const data = await searchPackages(inputValue);
+        setResults(data.objects.slice(0, 10)); // Limit to 10 suggestions
+      } catch (err) {
+        setError("Failed to fetch suggestions");
+      } finally {
+        setLoading(false);
+      }
+    }, 300);
+  }, [searchPackages]);
+
+  // Clean up the debounced function on unmount
+  useEffect(() => {
+    return () => {
+      debouncedFetchSuggestions.cancel();
+    };
+  }, [debouncedFetchSuggestions]);
 
   const handleInputChange = (e) => {
     const inputValue = e.target.value;
     setQuery(inputValue);
-    fetchSuggestions(
-      inputValue,
-      setResults,
-      setLoading,
-      setError,
-      searchPackages
-    );
+    debouncedFetchSuggestions(inputValue);
   };
 
   const handleSearch = (e) => {
