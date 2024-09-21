@@ -34,7 +34,7 @@ const Header = () => {
         setLoading(false);
       }
     }, 300),
-    []
+    [setResults, setLoading, setError, searchPackages]
   );
 
   const handleInputChange = (e) => {
