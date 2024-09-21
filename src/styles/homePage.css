@@ -1,0 +1,15 @@
+.bg-hp {
+  background-image: linear-gradient(to right, #fb8718, red, #ec21f0);
+}
+
+.poppins {
+  font-family: "Poppins", sans-serif;
+}
+
+.arimo {
+  font-family: "Arimo", sans-serif;
+}
+
+.border-line{
+    border-bottom: 0.5px solid #00000036;
+}

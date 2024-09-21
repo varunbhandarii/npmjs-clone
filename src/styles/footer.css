@@ -1,0 +1,8 @@
+.poppins {
+  font-family: "Poppins", sans-serif;
+}
+
+.gradient {
+  background-image: linear-gradient(to right, #fb8718, red, #ec21f0);
+  height: 10px;
+}
