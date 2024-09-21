@@ -15,10 +15,10 @@ const Header = () => {
 
   const resultsRef = useRef();
 
-  const fetchSuggestions = useCallback(
-    debounce(async (inputValue) => {
+  const debouncedFetchSuggestions = debounce(
+    async (inputValue, setResults, setLoading, setError, searchPackages) => {
       if (!inputValue.trim()) {
-        setResults([]);
+        setResults([]); // Reset results if input is empty
         return;
       }
 
@@ -33,8 +33,21 @@ const Header = () => {
       } finally {
         setLoading(false);
       }
-    }, 300),
-    [setResults, setLoading, setError, searchPackages]
+    },
+    300
+  ); // 300ms delay
+
+  const fetchSuggestions = useCallback(
+    (inputValue) => {
+      debouncedFetchSuggestions(
+        inputValue,
+        setResults,
+        setLoading,
+        setError,
+        searchPackages
+      );
+    },
+    [setResults, setLoading, setError, searchPackages] // Dependencies
   );
 
   const handleInputChange = (e) => {
