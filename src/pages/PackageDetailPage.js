@@ -105,7 +105,7 @@ const PackageDetailPage = () => {
               Dependencies ({Object.keys(dependencies).length})
             </h3>
             <hr className="" />
-            <div className="pt-6 flex flex-wrap">
+            <div className="pt-6 flex flex-wrap gap-3">
               {Object.keys(dependencies).length > 0 ? (
                 Object.keys(dependencies).map((dep) => (
                   <span
